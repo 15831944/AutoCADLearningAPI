@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +8,20 @@ using System.Threading.Tasks;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
+using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
 [assembly: CommandClass(typeof(AutoCADLearningAPI.Class1))]
 namespace AutoCADLearningAPI
 {
-    public class Class1
+    public class Class1 : IExtensionApplication
     {
+        #region init.
+        void IExtensionApplication.Initialize()
+        {
+            MessageBox.Show("This is your first AutoCAD plugin, cheers.");
+        }
+        #endregion
+
         [CommandMethod("Greetings")]
         public void Greetings()
         {
@@ -55,5 +65,10 @@ namespace AutoCADLearningAPI
                 acTrans.Commit();
             }
         }
+        #region ending
+        void IExtensionApplication.Terminate()
+        {
+        }
+        #endregion
     }
 }
