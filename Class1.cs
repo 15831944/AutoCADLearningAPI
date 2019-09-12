@@ -10,6 +10,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.EditorInput;
 
 [assembly: CommandClass(typeof(AutoCADLearningAPI.Class1))]
 namespace AutoCADLearningAPI
@@ -92,7 +93,47 @@ namespace AutoCADLearningAPI
         [CommandMethod("DrawUserDefLine")]
         public void DrawUserDefinedLine()
         {
-
+            // Get the current document and database, and start a transaction
+            Document acDoc = Application.DocumentManager.MdiActiveDocument;
+            Database acCurDb = acDoc.Database;
+            // 'using' a Transaction with the Transaction Manager
+            using (Transaction Trans = acCurDb.TransactionManager.StartTransaction())
+            {
+                BlockTable BlkTbl = Trans.GetObject(acCurDb.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTableRecord BlkTblRcrd = Trans.GetObject(BlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) 
+                    as BlockTableRecord;
+                // this is the point prompter
+                PromptPointOptions prPtOpt = new PromptPointOptions("\nSpecify start point: ");
+                prPtOpt.AllowArbitraryInput = false;
+                prPtOpt.AllowNone = true;
+                // an object that represents the screen, as it were
+                Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+                // save the result of the first point selection
+                PromptPointResult prPtRes1 = ed.GetPoint(prPtOpt);
+                // if the selected point isn't valid, break
+                if (prPtRes1.Status != PromptStatus.OK) return;
+                // if it WAS valid, save that selected point as a ... point
+                Point3d pnt1 = prPtRes1.Value;
+                // save this as the base point
+                prPtOpt.BasePoint = pnt1;
+                // starting from here
+                prPtOpt.UseBasePoint = true;
+                // shows a dashed line between the base point and the second prospective point
+                prPtOpt.UseDashedLine = true;
+                // prompter message
+                prPtOpt.Message = "\nSpecify end point:";
+                // save end result
+                PromptPointResult prPtRes2 = ed.GetPoint(prPtOpt);
+                // if not OK, break
+                if (prPtRes2.Status != PromptStatus.OK) return;
+                // otherwise save that point as a Point
+                Point3d pnt2 = prPtRes2.Value;
+                // draw a line between them
+                Line LineBetween = new Line(pnt1, pnt2);
+                BlkTblRcrd.AppendEntity(LineBetween);
+                Trans.AddNewlyCreatedDBObject(LineBetween, true);
+                Trans.Commit();
+            }
         }
         #region ending
         void IExtensionApplication.Terminate()
