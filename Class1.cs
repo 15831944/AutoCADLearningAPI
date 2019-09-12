@@ -200,6 +200,7 @@ namespace AutoCADLearningAPI
         {
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             ed.WriteMessage("Salutations unto thee, o brave warrior of computer-aided design.");
+            System.Threading.Thread.Sleep(500);
             MessageBox.Show("Salutations unto thee, o brave warrior of computer-aided design.");
         }
         // the Terminate method for IExtensionApplication
