@@ -202,10 +202,8 @@ namespace AutoCADLearningAPI
             ed.WriteMessage("Salutations unto thee, o brave warrior of computer-aided design.");
             MessageBox.Show("Salutations unto thee, o brave warrior of computer-aided design.");
         }
-        #region ending
-        void IExtensionApplication.Terminate()
-        {
-        }
-        #endregion
+        // the Terminate method for IExtensionApplication
+        // here, it does nothing, but it still needs to be defined
+        void IExtensionApplication.Terminate() { }
     }
 }
