@@ -15,14 +15,14 @@ using Autodesk.AutoCAD.Geometry;
 namespace AutoCADLearningAPI
 {
     // the reason that Class1 inherits from IExtensionApplication is that IExt. has pre-constructor methods
-        // that we can call.
+        // that we can call like constructors. The same for when the program is terminated.
 
     public class Class1 : IExtensionApplication
     {
         #region init.
         void IExtensionApplication.Initialize()
         {
-            MessageBox.Show("This is your first AutoCAD plugin, cheers.");
+            MessageBox.Show("AutoCADLearningAPI loaded successfully.");
         }
         #endregion
 
@@ -88,6 +88,11 @@ namespace AutoCADLearningAPI
                 ACDrawLine.AddNewlyCreatedDBObject(LineBetween, true);
                 ACDrawLine.Commit();
             }
+        }
+        [CommandMethod("DrawUserDefLine")]
+        public void DrawUserDefinedLine()
+        {
+
         }
         #region ending
         void IExtensionApplication.Terminate()
