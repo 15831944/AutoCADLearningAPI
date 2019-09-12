@@ -158,8 +158,8 @@ namespace AutoCADLearningAPI
                         // Add a circle to the block
                         using (Circle acCirc = new Circle())
                         {
-                            acCirc.Center = new Point3d(500, 250, 0);
-                            acCirc.Radius = 500;
+                            acCirc.Center = new Point3d(12.5, 6.25, 0);
+                            acCirc.Radius = 25;
 
                             acBlkTblRec.AppendEntity(acCirc);
 
@@ -194,6 +194,13 @@ namespace AutoCADLearningAPI
 
                 // Dispose of the transaction
             }
+        }
+        [CommandMethod("HAI")]
+        public void HelloWorld()
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            ed.WriteMessage("OH HAI GUYZ rawr XD");
+            MessageBox.Show("OH HAI GUYZ rawr XD");
         }
         #region ending
         void IExtensionApplication.Terminate()
