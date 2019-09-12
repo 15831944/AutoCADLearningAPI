@@ -199,8 +199,8 @@ namespace AutoCADLearningAPI
         public void HelloWorld()
         {
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("OH HAI GUYZ rawr XD");
-            MessageBox.Show("OH HAI GUYZ rawr XD");
+            ed.WriteMessage("Salutations unto thee, o brave warrior of computer-aided design.");
+            MessageBox.Show("Salutations unto thee, o brave warrior of computer-aided design.");
         }
         #region ending
         void IExtensionApplication.Terminate()
