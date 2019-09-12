@@ -135,6 +135,66 @@ namespace AutoCADLearningAPI
                 Trans.Commit();
             }
         }
+        [CommandMethod("PlaceTestDWG")]
+        public void PlaceTestDWG()
+        {
+            Database database = Application.DocumentManager.MdiActiveDocument.Database;
+            using (Transaction acTrans = database.TransactionManager.StartTransaction())
+            {
+                // Open the Block table for read
+                BlockTable acBlkTbl;
+                acBlkTbl = acTrans.GetObject(database.BlockTableId, OpenMode.ForRead) as BlockTable;
+
+                ObjectId blkRecId = ObjectId.Null;
+                if (!acBlkTbl.Has("CircleBlock"))
+                {
+                    using (BlockTableRecord acBlkTblRec = new BlockTableRecord())
+                    {
+                        acBlkTblRec.Name = "CircleBlock";
+
+                        // why the hell is this even an option?
+                        acBlkTblRec.Origin = new Point3d(0, 0, 0);
+
+                        // Add a circle to the block
+                        using (Circle acCirc = new Circle())
+                        {
+                            acCirc.Center = new Point3d(500, 250, 0);
+                            acCirc.Radius = 500;
+
+                            acBlkTblRec.AppendEntity(acCirc);
+
+                            acBlkTbl.UpgradeOpen();
+                            acBlkTbl.Add(acBlkTblRec);
+                            acTrans.AddNewlyCreatedDBObject(acBlkTblRec, true);
+                        }
+
+                        blkRecId = acBlkTblRec.Id;
+                    }
+                }
+                else
+                {
+                    blkRecId = acBlkTbl["CircleBlock"];
+                }
+
+                // Insert the block into the current space
+                if (blkRecId != ObjectId.Null)
+                {
+                    using (BlockReference acBlkRef = new BlockReference(new Point3d(0, 0, 0), blkRecId))
+                    {
+                        BlockTableRecord acCurSpaceBlkTblRec;
+                        acCurSpaceBlkTblRec = acTrans.GetObject(database.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+
+                        acCurSpaceBlkTblRec.AppendEntity(acBlkRef);
+                        acTrans.AddNewlyCreatedDBObject(acBlkRef, true);
+                    }
+                }
+
+                // Save the new object to the database
+                acTrans.Commit();
+
+                // Dispose of the transaction
+            }
+        }
         #region ending
         void IExtensionApplication.Terminate()
         {
