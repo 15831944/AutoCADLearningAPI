@@ -9,10 +9,14 @@ using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
+using Autodesk.AutoCAD.Geometry;
 
 [assembly: CommandClass(typeof(AutoCADLearningAPI.Class1))]
 namespace AutoCADLearningAPI
 {
+    // the reason that Class1 inherits from IExtensionApplication is that IExt. has pre-constructor methods
+        // that we can call.
+
     public class Class1 : IExtensionApplication
     {
         #region init.
@@ -49,7 +53,7 @@ namespace AutoCADLearningAPI
                     objText.Location = new Autodesk.AutoCAD.Geometry.Point3d(10, 10, 0);
 
                     // Set the text string for the MText object
-                    objText.Contents = "Greetings, Welcome to AutoCAD .NET";
+                    objText.Contents = "Greetings! Welcome to AutoCAD .NET!";
 
                     // Set the text style for the MText object
                     objText.TextStyleId = acCurDb.Textstyle;
@@ -63,6 +67,26 @@ namespace AutoCADLearningAPI
 
                 // Saves the changes to the database and closes the transaction
                 acTrans.Commit();
+            }
+        }
+        [CommandMethod("DrawLine")]
+        public void DrawLine()
+        {
+            // Get the current document and database, and start a transaction
+            Document acDoc = Application.DocumentManager.MdiActiveDocument;
+            Database acCurDb = acDoc.Database;
+            // 'using' a Transaction with the Transaction Manager
+            using (Transaction ACDrawLine = acCurDb.TransactionManager.StartTransaction())
+            {
+                BlockTable blockTable = ACDrawLine.GetObject(acCurDb.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTableRecord blockTableRecord = ACDrawLine.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite)
+                    as BlockTableRecord;
+                Point3d Point1 = new Point3d(0, 0, 0);
+                Point3d Point2 = new Point3d(100, 200, 0);
+                Line LineBetween = new Line(Point1, Point2);
+                blockTableRecord.AppendEntity(LineBetween);
+                ACDrawLine.AddNewlyCreatedDBObject(LineBetween, true);
+                ACDrawLine.Commit();
             }
         }
         #region ending
