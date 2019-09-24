@@ -200,8 +200,37 @@ namespace AutoCADLearningAPI
         {
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             ed.WriteMessage("Salutations unto thee, o brave warrior of computer-aided design.");
-            System.Threading.Thread.Sleep(500);
             MessageBox.Show("Salutations unto thee, o brave warrior of computer-aided design.");
+        }
+
+        // Define Command "AsdkCmd1"
+        [CommandMethod("AsdkCmd1")]
+        static public void test()
+        {
+            string comp = "D:\\Temp\\test.dwg";
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed = doc.Editor;
+            Transaction tr = doc.TransactionManager.StartTransaction();
+            try
+            {
+                string dwgName = HostApplicationServices.Current.FindFile(comp, Application.DocumentManager.MdiActiveDocument.Database, FindFileHint.Default);
+                Database db = new Database(false, false);
+                db.ReadDwgFile(dwgName, System.IO.FileShare.Read, true, "");
+                ObjectId BlkId;
+                BlkId = doc.Database.Insert(dwgName, db, false);
+                BlockTable bt = (BlockTable)tr.GetObject(doc.Database.BlockTableId, OpenMode.ForRead, true);
+                BlockTableRecord btr = (BlockTableRecord)tr.GetObject(bt[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
+                BlockReference bref = new BlockReference(new Point3d(10, 10, 0), BlkId);
+                btr.AppendEntity(bref);
+                tr.AddNewlyCreatedDBObject(bref, true);
+                bref.ExplodeToOwnerSpace();
+                bref.Erase();
+                tr.Commit();
+            }
+            finally
+            {
+                tr.Dispose();
+            }
         }
         // the Terminate method for IExtensionApplication
         // here, it does nothing, but it still needs to be defined

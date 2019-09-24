@@ -30,6 +30,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Thalita-Torres-Office-Office-school-rulers.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>AlliedCrane.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="accoremgd">
       <HintPath>D:\Autodesk\AutoCAD 2018\accoremgd.dll</HintPath>
@@ -57,6 +66,12 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Thalita-Torres-Office-Office-school-rulers.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AlliedCrane.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
